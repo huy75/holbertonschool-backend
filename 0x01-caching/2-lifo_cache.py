@@ -14,9 +14,10 @@ class LIFOCache(BaseCaching):
         if key and item:
             self.cache_data[key] = item
         if len(self.cache_data) > BaseCaching.MAX_ITEMS:
-            discarded_key = sorted(self.cache_data)[0]
-            self.cache_data.pop(discarded_key)
-            print('DISCARD: {}'.format(discarded_key))
+            self.cache_data.pop(self.last_item)
+            print('DISCARD:', self.last_item)
+        if key:
+            self.last_item = key
 
     def get(self, key):
         """ Get an item by key """
