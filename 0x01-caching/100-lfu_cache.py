@@ -4,8 +4,8 @@ from base_caching import BaseCaching
 from collections import OrderedDict
 
 
-class MRUCache(BaseCaching):
-    """ MRU caching system
+class LFUCache(BaseCaching):
+    """ LFU caching system
     """
     def __init__(self):
         """ Initialize class instance. """
