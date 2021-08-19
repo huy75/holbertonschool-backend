@@ -2,8 +2,6 @@
 """ Route module for the API """
 from flask import Flask, render_template, request, g
 from flask_babel import Babel
-from typing import Union
-from os import getenv
 
 
 users = {
@@ -26,7 +24,7 @@ class Config(object):
 
 
 # set the above class object as the configuration for the app
-app.config.from_object('5-app.Config')
+app.config.from_object(Config)
 
 
 @app.route('/', methods=['GET'], strict_slashes=False)
@@ -39,26 +37,22 @@ def index() -> str:
 
 
 @babel.localeselector
-def get_locale() -> str:
-    """ Determines best match for supported languages """
-    # check if there is a locale parameter/query string
-    if request.args.get('locale'):
-        locale = request.args.get('locale')
-        if locale in app.config['LANGUAGES']:
-            return locale
-    else:
-        return request.accept_languages.best_match(app.config['LANGUAGES'])
+def get_locale():
+    ''' get locale from request '''
+    locale = request.args.get("locale")
+    if locale:
+        return locale
+    return request.accept_languages.best_match(Config.LANGUAGES)
 
 
 def get_user() -> Union[dict, None]:
     """ Returns user dict if ID can be found """
-    if request.args.get('login_as'):
-        # have to type cast  the param to be able to search the user dict
-        user = int(request.args.get('login_as'))
-        if user in users:
-            return users.get(user)
-    else:
-        return None
+    login_as = request.args.get("login_as", False)
+    if login_as:
+        user = users.get(int(login_as), False)
+        if user:
+            return user
+    return None
 
 
 @app.before_request
