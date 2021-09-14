@@ -1,8 +1,11 @@
 import redis from 'redis';
+const { promisify } = require('util')
 
 // this creates a new client
 const client = redis.createClient(); 
 // By default redis.createClient() will use 127.0.0.1 and port 6379
+
+const asyncGet = promisify(client.get).bind(client);
 
 // listen for the connect event to see whether we successfully connected to the redis-server
 client.on('connect', () => console.log('Redis client connected to the server'));
@@ -15,14 +18,8 @@ function setNewSchool(schoolName, value) {
     client.set(schoolName, value, redis.print);
 }
 
-function displaySchoolValue(schoolName) {
-    client.get(schoolName, (err, result) => {
-        if (err) {
-            console.log(err);
-            throw err;
-        }
-    console.log(result);
-    });
+async function displaySchoolValue(schoolName) {
+    console.log(await asyncGet(schoolName));
 }
 
 displaySchoolValue('Holberton');
