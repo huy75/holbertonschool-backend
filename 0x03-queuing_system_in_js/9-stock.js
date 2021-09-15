@@ -93,7 +93,6 @@ app.get('/list_products/:itemId', async (req, res) => {
 app.get('/reserve_product/:itemId', async (req, res) => {
     const itemId = Number(req.params.itemId);
     const item = getItemById(itemId);
-    const item = getItemById(itemId);
     const noStock = { status: 'Not enough stock available', itemId };
     const reservationConfirmed = { status: 'Reservation confirmed', itemId };
 
